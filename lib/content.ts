@@ -21,10 +21,10 @@ export const EVENT = {
 
   /** TODO: the venue. `mapsQuery` is what opens in Google Maps. */
   venue: {
-    name: { vi: "Hội trường C1, Trường Đại học Bách khoa Hà Nội", en: "C1 Grand Hall, Hanoi University of Science and Technology" } as L,
+    name: { vi: "Hội trường C1 - Đại học Bách Khoa Hà Nội", en: "C1 Grand Hall, Hanoi University of Science and Technology" } as L,
     address: {
-      vi: "Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
-      en: "1 Dai Co Viet, Hai Ba Trung, Hanoi",
+      vi: "Số 1 Đại Cồ Việt, P. Bạch Mai, Hà Nội",
+      en: "1 Dai Co Viet, Bach Mai Ward, Hanoi",
     } as L,
     mapsQuery: "Đại học Bách khoa Hà Nội",
     /** Embed coordinates for the dark map. */
@@ -40,7 +40,7 @@ export const EVENT = {
     from: { code: "HUST", label: { vi: "Giảng Đường", en: "Campus" } as L },
     to: { code: "LIFE", label: { vi: "Chương tiếp theo", en: "Next chapter" } as L },
     /** TODO: your degree / faculty, printed as the fare class. */
-    cabin: { vi: "Kỹ sư CNTT · Hạng Danh dự", en: "B.Eng, Computer Science · Honours" } as L,
+    cabin: { vi: "Cử nhân - Kỹ thuật máy tính", en: "Bachelor of Computer Engineering" } as L,
   },
 
   /** TODO: contact shown in the footer + help line. */

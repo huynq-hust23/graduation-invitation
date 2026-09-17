@@ -29,6 +29,7 @@ export default function SectionPager() {
     let acc = 0;
 
     const onWheel = (e: WheelEvent) => {
+      if (document.documentElement.hasAttribute("data-board-lock")) return;
       if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.deltaY === 0) return;
 
       const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section"));

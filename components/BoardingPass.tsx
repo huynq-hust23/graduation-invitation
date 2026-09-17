@@ -25,6 +25,21 @@ export default function BoardingPass() {
 
   useEffect(() => setGuest(readGuestName()), []);
 
+  // Khoá cuộn trang tới khi vuốt lên chuyến xong: không cho xem trước các
+  // phần sau. `history.scrollRestoration` tắt để trình duyệt không tự kéo
+  // xuống một vị trí cũ trong lúc đang khoá.
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+    const html = document.documentElement;
+    html.scrollTo({ top: 0, behavior: "instant" });
+    html.setAttribute("data-board-lock", "true");
+    return () => html.removeAttribute("data-board-lock");
+  }, []);
+
+  useEffect(() => {
+    if (phase === "boarded") document.documentElement.removeAttribute("data-board-lock");
+  }, [phase]);
+
   // Pointer tilt: pointer-precise devices only, and never against a motion preference.
   useEffect(() => {
     const stage = stageRef.current;
@@ -135,7 +150,7 @@ export default function BoardingPass() {
             {phase === "boarded" && (
               <a
                 href={`#${DETAILS.id}`}
-                className="reveal is-visible label mt-6 inline-flex items-center gap-2 text-smoke transition-colors hover:text-chalk"
+                className="reveal is-visible label mt-6 inline-flex items-center gap-2 text-smoke transition-colors hover:text-chalk max-lg:[@media(max-height:880px)]:hidden"
               >
                 {t(UI.scrollOn)}
                 <ChevronDownIcon className="h-4 w-4 animate-bounce" />

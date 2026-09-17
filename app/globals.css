@@ -46,6 +46,14 @@
   html {
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
+    /* Thanh tiến trình đỏ ở Dock đã báo hiệu tiến độ cuộn; thanh cuộn gốc chỉ
+       hiện đột ngột lúc mở khoá lên chuyến nên ẩn hẳn cho đỡ giật. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
   }
 
   body {
@@ -54,6 +62,13 @@
     font-family: var(--font-body);
     padding-bottom: env(safe-area-inset-bottom);
     overflow-x: hidden;
+  }
+
+  /* Chưa vuốt lên chuyến thì chưa được xem trước các phần sau — khoá cả
+     wheel, phím và vuốt chạm bằng cách làm cho html hết chỗ để cuộn. */
+  html[data-board-lock="true"],
+  html[data-board-lock="true"] body {
+    overflow: hidden;
   }
 
   ::selection {
