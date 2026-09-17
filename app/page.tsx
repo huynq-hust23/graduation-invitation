@@ -6,6 +6,7 @@ import Route from "@/components/Route";
 import Places from "@/components/Places";
 import Journey from "@/components/Journey";
 import Thanks from "@/components/Thanks";
+import Guestbook from "@/components/Guestbook";
 import Dock from "@/components/Dock";
 import SectionPager from "@/components/SectionPager";
 
@@ -22,6 +23,7 @@ export default function Page() {
         <Route />
         <Places />
         <Journey />
+        <Guestbook />
         <Thanks />
       </main>
 
