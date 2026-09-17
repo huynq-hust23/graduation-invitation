@@ -1,0 +1,860 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens — Reference 2 language
+   Đen tuyền xen kẽ khối sáng, đỏ rực bóng, chữ nén in hoa cực lớn.
+   ========================================================================== */
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #141414;
+  --color-paper: #ffffff;
+  --color-paper-dim: #f2f2f2;
+
+  /* Đỏ chủ đạo: CHỈ cho chữ lớn (>=24px), khối đặc và đồ hoạ.
+     Trên nền #0A0A0A chỉ đạt 4.29:1 — không đủ cho chữ cỡ thường. */
+  --color-red: #e8112d;
+  /* Đỏ cho chữ cỡ thường trên nền tối: 5.65:1. */
+  --color-red-text: #ff3b4e;
+  --color-red-deep: #b00d22;
+  --color-red-lit: #ff6b78;
+
+  --color-chalk: #fafafa;
+  --color-smoke: #a3a3a3;
+  --color-graphite: #4a4a4a;
+
+  --font-display: var(--font-unbounded), "Arial Black", sans-serif;
+  --font-body: var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Mỗi phần là một màn hình; một nấc cuộn đưa tới phần kế tiếp. Dùng scroll
+     snap gốc của trình duyệt chứ không chặn wheel bằng JS, để bàn phím, vuốt
+     và trình đọc màn hình vẫn hoạt động bình thường. */
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-chalk);
+    font-family: var(--font-body);
+    padding-bottom: env(safe-area-inset-bottom);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-red);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-red-text);
+    outline-offset: 3px;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ==========================================================================
+   Bands — các dải sáng/tối xen kẽ tạo nhịp cho trang.
+   Mỗi dải tự khai báo màu chữ của nó, component chỉ việc đọc biến.
+   ========================================================================== */
+
+.band {
+  --band-fg: var(--color-chalk);
+  --band-fg-dim: var(--color-smoke);
+  --band-rule: #262626;
+  --band-surface: var(--color-ink-soft);
+  --band-red: var(--color-red-text);
+  background-color: var(--color-ink);
+  color: var(--band-fg);
+}
+
+.band--light {
+  --band-fg: var(--color-ink);
+  --band-fg-dim: var(--color-graphite);
+  --band-rule: #e0e0e0;
+  --band-surface: var(--color-paper-dim);
+  --band-red: var(--color-red);
+  background-color: var(--color-paper);
+}
+
+/* ==========================================================================
+   Typography — grotesque nén, in hoa, cực lớn
+   ========================================================================== */
+
+/* Chỉ dành cho tiêu đề lớn và vài khối đồ hoạ. line-height không được thấp
+   hơn ~1: chữ hoa tiếng Việt có dấu chồng (Ố, Ừ, Ế) sẽ đâm vào dòng trên. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  /* Dấu nặng dòng trên (Ẹ, Ạ) và dấu mũ dòng dưới (Ở, Ổ) cần ~1.2 mới không chạm. */
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  /* Khoảng trắng mặc định của Unbounded hẹp so với bề ngang con chữ. */
+  word-spacing: 0.12em;
+  text-wrap: balance;
+}
+
+/* Số liệu lớn: nén mạnh, đứng khối. */
+.numeral {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* Nhãn nhỏ — chữ thường, không giãn cách kiểu dashboard. */
+.label {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+
+/* ==========================================================================
+   Sân khấu — gradient đỏ-đen phủ kín khung hình và đèn chiếu từ trên xuống,
+   như các slide tối trong deck ZARYA (và như sân khấu lễ trao bằng).
+   ========================================================================== */
+
+.stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 55% at 80% 38%, rgb(214 16 38 / 0.5), transparent 70%),
+    radial-gradient(60% 45% at 0% 100%, rgb(160 6 24 / 0.5), transparent 72%),
+    radial-gradient(130% 90% at 50% 0%, #1c0307 0%, #080304 55%, #040404 100%);
+}
+
+.stage__lights {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.stage__beam {
+  position: absolute;
+  top: -4%;
+  left: var(--x);
+  width: min(38vw, 30rem);
+  height: 100%;
+  transform-origin: 50% 0;
+  transform: translateX(-50%) rotate(var(--r));
+  background: linear-gradient(
+    180deg,
+    rgb(255 90 100 / 0.5) 0%,
+    rgb(255 40 56 / 0.16) 42%,
+    transparent 78%
+  );
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  filter: blur(14px);
+  mix-blend-mode: screen;
+  animation: beam-sway 11s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+
+.stage__lamp {
+  position: absolute;
+  top: -0.6rem;
+  left: var(--x);
+  width: 4rem;
+  height: 1.4rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff, #ff6b75 45%, transparent);
+}
+
+@keyframes beam-sway {
+  from {
+    transform: translateX(-50%) rotate(calc(var(--r) - 3deg));
+  }
+  to {
+    transform: translateX(-50%) rotate(calc(var(--r) + 3deg));
+  }
+}
+
+/* Dải lụa đỏ bóng phía sau tấm vé. */
+.stage__ribbon {
+  position: absolute;
+  width: min(120vw, 72rem);
+  right: -18%;
+  top: 34%;
+  overflow: visible;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Nền riêng cho từng phần. Tất cả là gradient/SVG, không ảnh.
+   Mỗi phần dùng .decor-host; lớp trang trí nằm sau nội dung (z-index -1).
+   ========================================================================== */
+
+.decor-host {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Khung một màn hình. Trên cùng chừa chỗ cho nút ngôn ngữ, dưới cùng chừa chỗ
+   cho dock. Nội dung căn giữa theo chiều dọc. Nếu màn quá thấp mà nội dung vẫn
+   dài hơn, phần này cao thêm — trình duyệt cho cuộn bên trong thay vì cắt chữ. */
+@layer components {
+  .screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    /* Nút ngôn ngữ cao 44px đặt cách mép 16px; dock cao ~64px cách đáy 16px. */
+    padding-top: max(4.25rem, 8.5svh);
+    padding-bottom: max(5.25rem, 10svh);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+/* Trục ngang của timeline trên màn rộng, vẽ dần từ trái sang. */
+.spine-x {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.4s var(--ease-expo);
+}
+
+.spine-x.is-visible {
+  transform: scaleX(1);
+}
+
+/* Băng chuyền ảnh vuốt ngang trên màn hẹp. */
+.carousel {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel > * {
+  scroll-snap-align: start;
+}
+
+.decor {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Chữ số khổng lồ chỉ có viền — làm hình chìm. */
+.watermark {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--wm-stroke, rgb(0 0 0 / 0.08));
+}
+
+/* 01 · Chi tiết — xám nhạt, lụa đỏ góc phải trên. */
+.bg-details {
+  background: linear-gradient(180deg, #f5f5f4 0%, #ebebea 100%);
+}
+
+/* Mobile: chỉ để một mẩu lụa ló ở góc phải trên, tránh đè lên tiêu đề. */
+.bg-details .decor__ribbon {
+  position: absolute;
+  top: -8.5rem;
+  right: -12rem;
+  width: 22rem;
+  transform: rotate(-28deg) scaleX(-1);
+}
+
+@media (min-width: 48rem) {
+  .bg-details .decor__ribbon {
+    top: -14rem;
+    right: -22rem;
+    width: 52rem;
+  }
+}
+
+/* 02 · Đường đến — lưới toạ độ, đường bay chấm đỏ, quầng đỏ hắt từ đáy. */
+.bg-route {
+  background:
+    radial-gradient(70% 45% at 50% 105%, rgb(190 10 30 / 0.45), transparent 70%),
+    #070707;
+}
+
+.bg-route .decor__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(80% 70% at 60% 30%, #000, transparent 75%);
+  mask-image: radial-gradient(80% 70% at 60% 30%, #000, transparent 75%);
+}
+
+/* Đường bay nằm trong dải trống phía trên tiêu đề (phần này có padding-top lớn). */
+.bg-route .decor__flight {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(52rem, calc(100vw - 2.5rem), 84svh);
+}
+
+/* Màn hẹp: phóng to đường bay để máy bay và nét chấm còn nhìn rõ, hai đầu
+   tràn ra ngoài khung là chấp nhận được. */
+@media (max-width: 40rem) {
+  .bg-route .decor__flight {
+    width: 190vw;
+  }
+}
+
+.flight-path {
+  stroke-dasharray: 2 14;
+  animation: flight-dash 2.4s linear infinite;
+}
+
+@keyframes flight-dash {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+.flight-dest {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dest-pulse 2.2s var(--ease-expo) infinite;
+}
+
+@keyframes dest-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* 03 · Nơi chốn — trắng, cột đỏ đặc có chữ xoay dọc. */
+.bg-places {
+  background: #fff;
+}
+
+/* Không đặt display ở đây: CSS ngoài @layer thắng utility của Tailwind, nên
+   `hidden` / `xl:flex` trên markup sẽ mất tác dụng. */
+.side-bar {
+  align-items: center;
+  justify-content: center;
+  background: var(--color-red);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* 04 · Hành trình — gradient đỏ đậm từ phải, cột sáng dọc như vách sân khấu. */
+.bg-journey {
+  background:
+    linear-gradient(90deg, #060606 0%, #0a0405 40%, #3b0610 78%, #6e0a19 100%);
+}
+
+.bg-journey .decor__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--w);
+  left: var(--x);
+  background: linear-gradient(
+    180deg,
+    rgb(255 50 70 / var(--a)) 0%,
+    rgb(255 30 50 / calc(var(--a) * 0.35)) 55%,
+    transparent 100%
+  );
+}
+
+/* 05 · Cảm ơn — đỏ rực nhất trang. */
+.bg-thanks {
+  background:
+    radial-gradient(75% 65% at 72% 42%, #d3102a 0%, #8c0918 38%, #2a0306 75%, #0a0203 100%);
+}
+
+.bg-thanks .decor__ribbon {
+  position: absolute;
+  width: min(80rem, 150vw);
+  right: -30%;
+  bottom: -18%;
+  transform: rotate(-8deg);
+}
+
+/* Nhãn khối đỏ đặc. Nằm trong @layer để utility như `hidden` còn ghi đè được display. */
+@layer components {
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-red);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 0.5rem 0.8rem;
+  }
+}
+
+/* ==========================================================================
+   Boarding pass — vé giấy trắng, dải đầu và cuống đỏ đặc
+   ========================================================================== */
+
+.pass-stage {
+  /* Bóng đổ đặt ở lớp cha vì tấm vé dùng mask để khoét khấc — mask sẽ cắt mất
+     box-shadow nếu đặt ngay trên vé. */
+  filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.65)) drop-shadow(0 10px 18px rgb(90 0 12 / 0.45));
+}
+
+.pass {
+  --stub-h: clamp(4.25rem, 9.5svh, 6.75rem);
+  --notch: 12px;
+  position: relative;
+  background: #f6f5f2;
+  color: var(--color-ink);
+  border-radius: 10px;
+  transition: background-color 900ms var(--ease-expo);
+  /* Hai khấc bán nguyệt ở hai đầu đường xé, khoét thật để lộ nền phía sau. */
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub-h)), #0000 97%, #000),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub-h)), #0000 97%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub-h)), #0000 97%, #000),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub-h)), #0000 97%, #000);
+  mask-composite: intersect;
+}
+
+.pass__stub {
+  height: var(--stub-h);
+}
+
+@media (min-width: 48rem) {
+  .pass {
+    --stub-w: 9.5rem;
+    -webkit-mask:
+      radial-gradient(circle var(--notch) at calc(100% - var(--stub-w)) 0, #0000 97%, #000),
+      radial-gradient(circle var(--notch) at calc(100% - var(--stub-w)) 100%, #0000 97%, #000);
+    -webkit-mask-composite: source-in;
+    mask:
+      radial-gradient(circle var(--notch) at calc(100% - var(--stub-w)) 0, #0000 97%, #000),
+      radial-gradient(circle var(--notch) at calc(100% - var(--stub-w)) 100%, #0000 97%, #000);
+    mask-composite: intersect;
+  }
+
+  .pass__stub {
+    height: auto;
+    width: var(--stub-w);
+  }
+}
+
+/* Mọi lớp của vé trừ con dấu: xám cùng nhau, để dấu đỏ đóng lên nổi bật. */
+.pass > :not(.stamp) {
+  transition:
+    filter 900ms var(--ease-expo),
+    transform 900ms var(--ease-expo),
+    opacity 700ms ease-out;
+}
+
+/* Vé đã lên chuyến — bạc màu hoàn toàn như một tấm vé đã dùng xong. */
+.pass.is-boarded > :not(.stamp) {
+  filter: grayscale(1) brightness(0.72);
+}
+
+/* Nền giấy nằm trên chính .pass nên filter ở trên không chạm tới. */
+.pass.is-boarded {
+  background-color: #b3b1ad;
+}
+
+.pass__sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pass__sheen::before {
+  content: "";
+  position: absolute;
+  inset-block: -60%;
+  inset-inline-start: -40%;
+  width: 26%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgb(255 255 255 / 0.16) 44%,
+    var(--color-red-lit) 54%,
+    transparent
+  );
+  transform: rotate(14deg) translateX(-120%);
+}
+
+.is-boarding .pass__sheen::before {
+  animation: sheen-sweep 1000ms var(--ease-expo) forwards;
+}
+
+@keyframes sheen-sweep {
+  to {
+    transform: rotate(14deg) translateX(560%);
+  }
+}
+
+/* Đường xé giữa thân vé và cuống. Hai khấc ở hai đầu do mask trên .pass lo.
+   Mobile: nằm ngang. Từ md: nằm dọc. */
+.perf {
+  flex-shrink: 0;
+  height: 0;
+  margin-inline: 1.25rem;
+  border-top: 2px dashed #c9c6c0;
+}
+
+@media (min-width: 48rem) {
+  .perf {
+    height: auto;
+    width: 0;
+    margin-inline: 0;
+    margin-block: 1.25rem;
+    border-top: 0;
+    border-left: 2px dashed #c9c6c0;
+  }
+}
+
+/* Mã vạch vẽ bằng gradient, theo màu chữ của khối chứa nó. */
+.barcode {
+  background-image: repeating-linear-gradient(
+    to right,
+    currentColor 0 2px,
+    transparent 2px 4px,
+    currentColor 4px 5px,
+    transparent 5px 9px,
+    currentColor 9px 12px,
+    transparent 12px 14px
+  );
+}
+
+.pass__scan {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  container-type: inline-size;
+}
+
+.scanbeam {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-red-lit),
+    var(--color-red),
+    transparent
+  );
+  box-shadow: 0 0 24px 6px var(--color-red);
+  opacity: 0;
+}
+
+.is-boarding .scanbeam {
+  animation: scan 950ms var(--ease-expo) forwards;
+}
+
+@keyframes scan {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100cqw);
+  }
+}
+
+/* Cuống vé tách ra: xê dịch và mờ đi, không bay hẳn đi để khỏi để lại
+   một khoảng trống rỗng bên trong tấm thẻ. Transition nằm ở `.pass > *`. */
+.is-boarded .stub {
+  transform: translate3d(0, 9%, 0) rotate(-1.2deg);
+  opacity: 0.45;
+}
+
+@media (min-width: 48rem) {
+  .is-boarded .stub {
+    transform: translate3d(7%, 2%, 0) rotate(1.4deg);
+  }
+}
+
+.stamp {
+  opacity: 0;
+  transform: rotate(-11deg) scale(1.7);
+}
+
+.is-boarded .stamp {
+  animation: stamp-in 600ms var(--ease-back) 160ms forwards;
+}
+
+@keyframes stamp-in {
+  to {
+    opacity: 1;
+    transform: rotate(-11deg) scale(1);
+  }
+}
+
+/* ==========================================================================
+   Swipe track — thanh chữ nhật sắc cạnh, fill đỏ đặc
+   ========================================================================== */
+
+.track {
+  position: relative;
+  overflow: hidden;
+  background: rgb(10 10 10 / 0.55);
+  border: 1px solid rgb(232 17 45 / 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.track__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background: linear-gradient(90deg, var(--color-red-deep), var(--color-red));
+  width: calc(var(--swipe, 0) * 100%);
+}
+
+.track__knob {
+  transform: translate3d(calc(var(--swipe, 0) * var(--knob-travel, 0px)), 0, 0);
+}
+
+.track__knob.is-settling {
+  transition: transform 420ms var(--ease-expo);
+}
+
+.track__label {
+  background: linear-gradient(
+    90deg,
+    #d4d4d4 0%,
+    #d4d4d4 36%,
+    #ffffff 50%,
+    #d4d4d4 64%,
+    #d4d4d4 100%
+  );
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: label-shimmer 3.2s linear infinite;
+}
+
+@keyframes label-shimmer {
+  to {
+    background-position: -260% 0;
+  }
+}
+
+/* ==========================================================================
+   Countdown reel
+   ========================================================================== */
+
+.reel {
+  height: 1em;
+  overflow: hidden;
+}
+
+.reel__track {
+  transform: translateY(calc(var(--digit, 0) * -10%));
+  transition: transform 720ms var(--ease-expo);
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Map
+   ========================================================================== */
+
+.ping::before,
+.ping::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--color-red);
+  animation: ping-out 2.6s var(--ease-expo) infinite;
+}
+
+.ping::after {
+  animation-delay: 1.3s;
+}
+
+@keyframes ping-out {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(4.2);
+    opacity: 0;
+  }
+}
+
+.map-dark {
+  filter: invert(0.92) hue-rotate(180deg) saturate(0.35) brightness(0.72) contrast(1.15);
+}
+
+/* ==========================================================================
+   Marquee
+   ========================================================================== */
+
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-left var(--marquee-duration, 42s) linear infinite;
+}
+
+.marquee--reverse {
+  animation-name: marquee-right;
+}
+
+.marquee-host:hover .marquee {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-left {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ==========================================================================
+   Scroll reveal
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 620ms var(--ease-expo),
+    transform 620ms var(--ease-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.spine {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1.4s var(--ease-expo);
+}
+
+.spine.is-visible {
+  transform: scaleY(1);
+}
+
+.progress {
+  transform-origin: left;
+  transform: scaleX(var(--progress, 0));
+}
+
+/* ==========================================================================
+   Motion preferences
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee,
+  .stage__beam,
+  .flight-path,
+  .flight-dest,
+  .track__label,
+  .ping::before,
+  .ping::after,
+  .is-boarding .pass__sheen::before,
+  .is-boarding .scanbeam {
+    animation: none !important;
+  }
+
+  .reveal,
+  .spine,
+  .reel__track,
+  .pass,
+  .pass > * {
+    transition-duration: 1ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .spine {
+    transform: scaleY(1);
+  }
+
+  .spine-x {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  .is-boarded .stub {
+    transform: none;
+    opacity: 0.45;
+  }
+
+  .is-boarded .stamp {
+    animation-duration: 1ms;
+  }
+}
