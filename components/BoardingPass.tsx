@@ -7,6 +7,7 @@ import { formatPassDate, formatTime, formatWeekday, formatLongDate } from "@/lib
 import SwipeTrack from "./SwipeTrack";
 import { ChevronDownIcon, PlaneIcon } from "./Icons";
 import { Ribbon, StageBeams } from "./StageDecor";
+import { playStamp } from "@/lib/sfx";
 
 /** Guest name arrives as ?to=Name. Trimmed and capped so long values can't break the pass. */
 function readGuestName() {
@@ -75,7 +76,12 @@ export default function BoardingPass() {
 
   const board = useCallback(() => {
     setPhase("boarding");
-    window.setTimeout(() => setPhase("boarded"), 900);
+    // Đợi đúng lúc con dấu thật sự đập xuống: 900ms chuyển sang "boarded" +
+    // 160ms animation-delay của `.is-boarded .stamp` trong globals.css.
+    window.setTimeout(() => {
+      setPhase("boarded");
+      window.setTimeout(playStamp, 160);
+    }, 900);
   }, []);
 
   const passengerLine = guest ?? t(HERO.defaultGuest);

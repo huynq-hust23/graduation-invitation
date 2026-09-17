@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLang } from "@/lib/i18n";
 import { EVENT, ROUTE, UI } from "@/lib/content";
 import { mapsEmbedUrl, mapsUrl } from "@/lib/event";
+import { playTick } from "@/lib/sfx";
 import SectionHeader from "./SectionHeader";
 import Reveal from "./Reveal";
 import { ArrowRightIcon, PhoneIcon } from "./Icons";
@@ -136,7 +137,10 @@ function MapFrame({ title, activateLabel }: { title: string; activateLabel: stri
       {!active && (
         <button
           type="button"
-          onClick={() => setActive(true)}
+          onClick={() => {
+            playTick();
+            setActive(true);
+          }}
           className="absolute inset-0 flex cursor-pointer items-end justify-start p-3"
         >
           <span className="bg-ink/85 px-3 py-1.5 text-xs font-semibold text-chalk opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 max-lg:opacity-100">

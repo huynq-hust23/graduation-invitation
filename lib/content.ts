@@ -7,11 +7,21 @@
 export type Lang = "vi" | "en";
 export type L = { vi: string; en: string };
 
+/*
+ * Personal fields come from env (see .env.example) so they never sit in git
+ * history. Next.js only inlines `process.env.NEXT_PUBLIC_*` when written as a
+ * static member access like this — a dynamic `process.env[key]` lookup is
+ * invisible to its client-bundle replacement and always reads as undefined.
+ */
+const GRADUATE_NAME = process.env.NEXT_PUBLIC_GRADUATE_NAME?.trim() || "[YOUR_NAME]";
+const PHONE_NUMBER = process.env.NEXT_PUBLIC_PHONE_NUMBER?.trim() || "[PHONE_NUMBER]";
+const EMAIL_ADDRESS = process.env.NEXT_PUBLIC_EMAIL_ADDRESS?.trim() || "[EMAIL_ADDRESS]";
+
 /* --- The facts -------------------------------------------------------- */
 
 export const EVENT = {
-  /** TODO: your name, as it should be printed on the pass. */
-  graduateName: "[YOUR_NAME]",
+  /** Set NEXT_PUBLIC_GRADUATE_NAME in .env.local — your name as printed on the pass. */
+  graduateName: GRADUATE_NAME,
 
   /** TODO: ISO 8601 with your real timezone offset. Weekday is derived, never hardcoded. */
   startsAt: "2026-09-27T09:00:00+07:00",
@@ -43,10 +53,10 @@ export const EVENT = {
     cabin: { vi: "Cử nhân - Kỹ thuật máy tính", en: "Bachelor of Computer Engineering" } as L,
   },
 
-  /** TODO: contact shown in the footer + help line. */
+  /** Set NEXT_PUBLIC_PHONE_NUMBER / NEXT_PUBLIC_EMAIL_ADDRESS in .env.local. */
   contact: {
-    phone: "[PHONE_NUMBER]",
-    email: "[EMAIL_ADDRESS]",
+    phone: PHONE_NUMBER,
+    email: EMAIL_ADDRESS,
   },
 };
 
@@ -72,7 +82,7 @@ export const UI = {
   flightNo: { vi: "Chuyến", en: "Flight" } as L,
   gate: { vi: "Cổng", en: "Gate" } as L,
   seat: { vi: "Chỗ", en: "Seat" } as L,
-  boardingTime: { vi: "Giờ lên", en: "Boarding" } as L,
+  boardingTime: { vi: "Khởi hành", en: "Boarding" } as L,
   date: { vi: "Ngày", en: "Date" } as L,
   cabinClass: { vi: "Hạng", en: "Class" } as L,
   honoredGuest: { vi: "KHÁCH MỜI DANH DỰ", en: "HONOURED GUEST" } as L,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { playWhoosh } from "@/lib/sfx";
 
 /** Bao lâu không có sự kiện wheel thì coi như một cử chỉ cuộn đã kết thúc. */
 const QUIET_MS = 220;
@@ -75,6 +76,7 @@ export default function SectionPager() {
       busy = true;
       busyUntil = now + TRAVEL_MS;
       acc = 0;
+      if (!reduceMotion.matches) playWhoosh();
       window.scrollTo({ top: to, behavior: reduceMotion.matches ? "instant" : "smooth" });
     };
 

@@ -10,3 +10,4 @@ next-env.d.ts
 .vercel
 *.tsbuildinfo
 shots/
+CLAUDE.md

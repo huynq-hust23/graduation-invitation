@@ -2,6 +2,7 @@
 
 import { useLang } from "@/lib/i18n";
 import { UI } from "@/lib/content";
+import { playTick } from "@/lib/sfx";
 import { GlobeIcon } from "./Icons";
 
 export default function LangToggle() {
@@ -10,7 +11,10 @@ export default function LangToggle() {
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={() => {
+        playTick();
+        toggle();
+      }}
       aria-label={t(UI.switchLang)}
       className="fixed top-4 right-4 z-50 inline-flex min-h-11 cursor-pointer items-center gap-2 border border-[#2a2a2a] bg-ink/85 px-4 text-sm font-semibold text-chalk backdrop-blur-md transition-colors duration-200 hover:border-red"
     >

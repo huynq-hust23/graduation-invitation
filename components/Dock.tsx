@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/lib/i18n";
 import { EVENT, UI } from "@/lib/content";
 import { downloadICS, formatStamp, formatTime, mapsUrl } from "@/lib/event";
+import { playChime, playTick } from "@/lib/sfx";
 import { CalendarIcon, CheckIcon, PinIcon } from "./Icons";
 
 export default function Dock() {
@@ -45,6 +46,7 @@ export default function Dock() {
 
   const save = () => {
     downloadICS(`${t(UI.calendarTitle)} · ${EVENT.graduateName}`, t(EVENT.venue.address));
+    playChime();
     setSaved(true);
     window.setTimeout(() => setSaved(false), 2600);
   };
@@ -83,6 +85,7 @@ export default function Dock() {
               href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={playTick}
               className="inline-flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 bg-red px-4 text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--color-red-deep)]"
             >
               <PinIcon className="h-4 w-4" />
