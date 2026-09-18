@@ -85,7 +85,7 @@ export default function GuestbookForm() {
       <div className="lg:col-span-2">
         <button
           type="submit"
-          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 bg-red px-6 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[var(--color-red-deep)] sm:w-auto sm:text-base"
+          className="mx-auto flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 bg-red px-6 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[var(--color-red-deep)] sm:w-auto sm:text-base"
         >
           {t(GUESTBOOK.submit)}
         </button>
