@@ -316,4 +316,39 @@ export const THANKS = {
   signoff: { vi: "Hẹn gặp bạn ở cổng C1", en: "See you at Gate C1" } as L,
 };
 
-export const SECTIONS = [DETAILS, ROUTE, PLACES, JOURNEY, THANKS];
+/* --- Guestbook (its own section, last in the one-page scroll flow) ----- */
+
+export const GUESTBOOK = {
+  id: "luu-but",
+  linkLabel: { vi: "Viết lưu bút cho mình", en: "Sign my guestbook" } as L,
+  eyebrow: { vi: "Trang lưu bút", en: "Guestbook" } as L,
+  title: { vi: "Để lại vài dòng cho mình", en: "Leave a few lines for me" } as L,
+  lead: {
+    vi: "Một lời nhắn, một tấm ảnh — mình sẽ giữ lại tất cả sau buổi lễ.",
+    en: "A message, a photo — I will keep every bit of it after the ceremony.",
+  } as L,
+  fields: {
+    name: { vi: "Tên của bạn", en: "Your name" } as L,
+    message: { vi: "Lời nhắn / cảm nghĩ", en: "Your message" } as L,
+    messagePlaceholder: {
+      vi: "Viết gì đó cho mình đọc lại sau này…",
+      en: "Write something for me to read back later…",
+    } as L,
+    photo: { vi: "Ảnh & lưu niệm", en: "Photo & keepsake" } as L,
+    photoHint: { vi: "Không bắt buộc — JPG/PNG, tối đa 8MB", en: "Optional — JPG/PNG, up to 8MB" } as L,
+  },
+  submit: { vi: "Gửi lưu bút", en: "Send" } as L,
+  sending: { vi: "Đang gửi…", en: "Sending…" } as L,
+  sent: { vi: "Đã nhận được lời nhắn của bạn, cảm ơn nhiều!", en: "Got your message — thank you!" } as L,
+  notConfigured: {
+    vi: "Nơi lưu trữ lời nhắn chưa được nối — form đã sẵn sàng, chỉ đợi bạn Huy chọn nơi gửi về.",
+    en: "Storage isn't wired up yet — the form is ready, just waiting on where to send it.",
+  } as L,
+  turnstileMissing: {
+    vi: "Thiếu Site Key của Cloudflare Turnstile — đặt NEXT_PUBLIC_TURNSTILE_SITE_KEY trong .env.local.",
+    en: "Missing Cloudflare Turnstile site key — set NEXT_PUBLIC_TURNSTILE_SITE_KEY in .env.local.",
+  } as L,
+  photoTooLarge: { vi: "Ảnh vượt quá 8MB, chọn ảnh nhẹ hơn nhé.", en: "That photo is over 8MB — pick a smaller one." } as L,
+};
+
+export const SECTIONS = [DETAILS, ROUTE, PLACES, JOURNEY, THANKS, GUESTBOOK];

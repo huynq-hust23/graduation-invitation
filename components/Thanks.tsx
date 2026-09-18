@@ -1,9 +1,9 @@
 "use client";
 
 import { useLang } from "@/lib/i18n";
-import { EVENT, THANKS } from "@/lib/content";
+import { EVENT, GUESTBOOK, THANKS } from "@/lib/content";
 import Reveal from "./Reveal";
-import { ChevronsRightIcon } from "./Icons";
+import { ArrowRightIcon, ChevronsRightIcon } from "./Icons";
 import { Ribbon, StageBeams } from "./StageDecor";
 
 // Nền ở đây là đỏ rực, nên mọi chữ dùng trắng: chữ đỏ sẽ chìm hẳn, còn xám
@@ -71,6 +71,13 @@ export default function Thanks() {
               className="inline-flex min-h-11 cursor-pointer items-center font-mono text-sm text-white/75 transition-colors hover:text-white"
             >
               {EVENT.contact.email}
+            </a>
+            <a
+              href={`#${GUESTBOOK.id}`}
+              className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 text-sm font-semibold text-white transition-colors hover:text-white/75 [@media(max-height:700px)]:hidden"
+            >
+              {t(GUESTBOOK.linkLabel)}
+              <ArrowRightIcon className="h-4 w-4" />
             </a>
           </Reveal>
         </div>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useLang } from "@/lib/i18n";
 import { EVENT, ROUTE, UI } from "@/lib/content";
 import { mapsEmbedUrl, mapsUrl } from "@/lib/event";
 import { playTick } from "@/lib/sfx";
 import SectionHeader from "./SectionHeader";
 import Reveal from "./Reveal";
-import { ArrowRightIcon, PhoneIcon } from "./Icons";
+import { ArrowRightIcon, PhoneIcon, PlaneIcon } from "./Icons";
 
 export default function Route() {
   const { t } = useLang();
@@ -15,28 +16,55 @@ export default function Route() {
   return (
     <section
       id={ROUTE.id}
-      className="band bg-route decor-host screen px-5 pt-[max(5.75rem,14svh)] sm:px-8"
+      className="band decor-host screen px-5 pt-[max(5.75rem,14svh)] sm:px-8"
     >
       <div className="decor" aria-hidden="true">
-        <div className="decor__grid" />
-        <FlightPath />
+        {/* object-cover phủ theo chiều cao khi màn cao/hẹp hơn tỉ lệ ảnh gốc —
+            "sizes" phải tính theo chiều cao lúc đó, không chỉ theo chiều rộng,
+            nếu không Next sẽ tải ảnh nhỏ hơn thực tế cần rồi phóng to bị vỡ nét. */}
+        <Image
+          src="/assets/section2-bg-desktop.png"
+          alt=""
+          fill
+          quality={90}
+          sizes="(max-aspect-ratio: 1.79) 185vh, 100vw"
+          className="hidden object-cover md:block"
+        />
+        <Image
+          src="/assets/section2-bg-mobile.png"
+          alt=""
+          fill
+          quality={90}
+          sizes="(max-aspect-ratio: 0.56) 60vh, 100vw"
+          className="object-cover md:hidden"
+        />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
-      {/* Mobile: tiêu đề → bản đồ → các bước. Màn rộng: tiêu đề và các bước bên trái,
-          bản đồ chiếm trọn cột phải. */}
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)] gap-x-12 gap-y-[clamp(0.75rem,2.4svh,1.5rem)] [grid-template-areas:'head'_'map'_'steps'] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:items-center lg:[grid-template-areas:'head_map'_'steps_map']">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-[clamp(0.4rem,1.2svh,0.75rem)]">
         <SectionHeader
           index={2}
           eyebrow={t(ROUTE.nav)}
           title={t(ROUTE.title)}
           lead={t(ROUTE.lead)}
-          className="mb-0! [grid-area:head] lg:self-end"
+          className="mb-0!"
         />
 
-        <Reveal className="border-2 border-[var(--band-rule)] [grid-area:map]">
+        {/* Khung bản đồ kiểu vé: dải đỏ đặc ở đầu, giống header vé máy bay ở Hero. */}
+        <Reveal className="border-2 border-[var(--band-rule)]">
+          <div className="flex items-center justify-between gap-4 bg-red px-5 py-2 text-white">
+            <span className="font-display text-[0.7rem] font-semibold tracking-wide uppercase">
+              {t(ROUTE.nav)}
+            </span>
+            <span className="flex items-center gap-2 font-mono text-xs">
+              {EVENT.pass.gate}
+              <PlaneIcon className="h-4 w-4" />
+            </span>
+          </div>
+
           <MapFrame title={t(EVENT.venue.name)} activateLabel={t(UI.mapActivate)} />
 
-          <div className="flex items-center justify-between gap-3 border-t-2 border-[var(--band-rule)] bg-[var(--band-surface)] px-4 py-3 sm:px-5">
+          <div className="flex items-center justify-between gap-3 border-t-2 border-[var(--band-rule)] bg-[var(--band-surface)] px-4 py-2 sm:px-5">
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-[var(--band-fg)] sm:text-base">
                 {t(EVENT.venue.name)}
@@ -57,41 +85,22 @@ export default function Route() {
           </div>
         </Reveal>
 
-        <div className="[grid-area:steps] lg:self-start">
-          <ol className="space-y-[clamp(0.4rem,1.4svh,1rem)]">
-            {ROUTE.steps.map((step, i) => (
-              <Reveal
-                as="li"
-                key={i}
-                delay={i * 90}
-                className="grid grid-cols-[2.5rem_1fr] items-baseline gap-x-3 border-t border-[var(--band-rule)] pt-[clamp(0.4rem,1.4svh,0.9rem)]"
-              >
-                <span className="numeral text-lg text-red sm:text-xl">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--band-fg)] sm:text-base">
-                    {t(step.title)}
-                  </p>
-                  <p className="mt-0.5 text-sm leading-snug text-[var(--band-fg-dim)] max-md:hidden [@media(max-height:760px)]:hidden">
-                    {t(step.note)}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </ol>
-
-          <Reveal className="mt-[clamp(0.5rem,2svh,1.25rem)] flex flex-wrap items-center gap-x-3">
-            <span className="label text-[var(--band-fg-dim)]">{t(ROUTE.helpLabel)}</span>
-            <a
-              href={`tel:${EVENT.contact.phone.replace(/\s/g, "")}`}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-base text-[var(--band-fg)] transition-colors hover:text-[var(--band-red)]"
-            >
-              <PhoneIcon className="h-4 w-4 text-red" />
-              {EVENT.contact.phone}
-            </a>
-          </Reveal>
-        </div>
+        {/* Ba bước + số điện thoại gộp một dòng gọn, nhường phần lớn chiều cao cho bản đồ. */}
+        <Reveal className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 border-t-2 border-[var(--band-rule)] pt-[clamp(0.3rem,0.9svh,0.6rem)] text-center">
+          {ROUTE.steps.map((step, i) => (
+            <span key={i} className="inline-flex items-baseline gap-1.5 text-sm sm:text-base">
+              <span className="numeral text-red">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-semibold text-[var(--band-fg)]">{t(step.title)}</span>
+            </span>
+          ))}
+          <a
+            href={`tel:${EVENT.contact.phone.replace(/\s/g, "")}`}
+            className="inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-sm text-[var(--band-fg)] transition-colors hover:text-[var(--band-red)] sm:text-base"
+          >
+            <PhoneIcon className="h-4 w-4 text-red" />
+            {EVENT.contact.phone}
+          </a>
+        </Reveal>
       </div>
     </section>
   );
@@ -117,7 +126,7 @@ function MapFrame({ title, activateLabel }: { title: string; activateLabel: stri
 
   return (
     <div
-      className="group relative h-[clamp(7.5rem,21svh,13rem)] lg:h-[clamp(14rem,46svh,30rem)]"
+      className="group relative h-[clamp(9rem,26svh,15rem)] lg:h-[clamp(12rem,28svh,18rem)]"
       onMouseLeave={() => setActive(false)}
     >
       <iframe
@@ -149,35 +158,5 @@ function MapFrame({ title, activateLabel }: { title: string; activateLabel: stri
         </button>
       )}
     </div>
-  );
-}
-
-/** Đường bay chấm đỏ từ HUST tới cổng C1, máy bay đặt tại t≈0.6 trên đường cong. */
-function FlightPath() {
-  return (
-    <svg className="decor__flight" viewBox="0 0 1000 150" fill="none" overflow="visible">
-      <path
-        className="flight-path"
-        d="M 30 120 C 300 10, 700 10, 970 95"
-        stroke="#e8112d"
-        strokeOpacity="0.8"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <circle cx="30" cy="120" r="7" stroke="#e8112d" strokeWidth="2.5" fill="#070707" />
-      <text x="30" y="148" textAnchor="middle" fill="#fff" fillOpacity="0.45" fontSize="14" fontFamily="monospace">
-        {EVENT.pass.from.code}
-      </text>
-
-      <circle className="flight-dest" cx="970" cy="95" r="7" fill="#e8112d" />
-      <circle cx="970" cy="95" r="7" fill="#e8112d" />
-      <text x="970" y="123" textAnchor="middle" fill="#fff" fillOpacity="0.45" fontSize="14" fontFamily="monospace">
-        {EVENT.pass.gate}
-      </text>
-
-      <g transform="translate(600 35) rotate(36) scale(1.7) translate(-11.5 -12.5)">
-        <path d="M2 13l19-7-7 19-2.5-8.5L2 13Z" fill="#e8112d" stroke="#ff6b78" strokeWidth="1" strokeLinejoin="round" />
-      </g>
-    </svg>
   );
 }
