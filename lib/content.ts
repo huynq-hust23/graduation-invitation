@@ -349,38 +349,6 @@ export const GUESTBOOK = {
     en: "Missing Cloudflare Turnstile site key — set NEXT_PUBLIC_TURNSTILE_SITE_KEY in .env.local.",
   } as L,
   photoTooLarge: { vi: "Ảnh vượt quá 8MB, chọn ảnh nhẹ hơn nhé.", en: "That photo is over 8MB — pick a smaller one." } as L,
-
-  wallCaption: {
-    vi: "Bản xem trước — lời nhắn thật sẽ thay vào đây",
-    en: "Preview — real messages will replace these",
-  } as L,
-  wallSampleLabel: { vi: "Lời nhắn mẫu", en: "Sample message" } as L,
-  wall: [
-    {
-      vi: "Chúc mừng cậu tốt nghiệp! Tự hào về hành trình bốn năm này lắm.",
-      en: "Congrats on graduating! So proud of these four years.",
-    } as L,
-    {
-      vi: "Hẹn gặp ở cổng C1 nhé, nhớ để dành chỗ cho tớ!",
-      en: "See you at Gate C1 — save me a seat!",
-    } as L,
-    {
-      vi: "Cảm ơn vì đã luôn là người bạn đáng tin cậy suốt thời sinh viên.",
-      en: "Thanks for being such a steady friend through it all.",
-    } as L,
-    {
-      vi: "Một chương mới, nhưng tình bạn thì vẫn vậy.",
-      en: "A new chapter, but the friendship stays the same.",
-    } as L,
-    {
-      vi: "Tự hào về cậu — từ ngày đầu bỡ ngỡ đến hôm nay.",
-      en: "So proud — from that awkward first day to today.",
-    } as L,
-    {
-      vi: "Đây sẽ là một buổi lễ đáng nhớ. Chúc mừng nhé!",
-      en: "This is going to be a ceremony to remember. Congrats!",
-    } as L,
-  ],
 };
 
 export const SECTIONS = [DETAILS, ROUTE, PLACES, JOURNEY, THANKS, GUESTBOOK];
