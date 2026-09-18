@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/lib/i18n";
-import { EVENT, UI } from "@/lib/content";
-import { downloadICS, formatStamp, formatTime, mapsUrl } from "@/lib/event";
+import { DETAILS, EVENT, UI } from "@/lib/content";
+import { formatStamp, formatTime, googleCalendarUrl, mapsUrl } from "@/lib/event";
 import { playChime, playTick } from "@/lib/sfx";
 import { CalendarIcon, CheckIcon, PinIcon } from "./Icons";
 
@@ -13,9 +13,9 @@ export default function Dock() {
   const [saved, setSaved] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
 
-  // One passive, frame-throttled listener drives both the dock and the
-  // progress bar — the bar is written as a CSS variable, never as state,
-  // so scrolling never triggers a React render.
+  // Thanh tiến trình đỏ theo dõi toàn trang — vẫn một listener passive,
+  // frame-throttled, ghi thẳng ra CSS variable để cuộn trang không kích hoạt
+  // render React nào.
   useEffect(() => {
     let frame = 0;
 
@@ -23,7 +23,6 @@ export default function Dock() {
       frame = 0;
       const scrolled = window.scrollY;
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      setShown(scrolled > window.innerHeight * 0.6);
       barRef.current?.style.setProperty(
         "--progress",
         String(max > 0 ? Math.min(1, scrolled / max) : 0),
@@ -44,8 +43,25 @@ export default function Dock() {
     };
   }, []);
 
-  const save = () => {
-    downloadICS(`${t(UI.calendarTitle)} · ${EVENT.graduateName}`, t(EVENT.venue.address));
+  // Dock (lưu lịch / chỉ đường) chỉ hiện khi đang ở đúng section "Chi tiết" —
+  // các section khác không cần lặp lại 2 nút này.
+  useEffect(() => {
+    const target = document.getElementById(DETAILS.id);
+    if (!target) return;
+    const observer = new IntersectionObserver(([entry]) => setShown(entry.isIntersecting), {
+      threshold: 0.5,
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  const calendarUrl = googleCalendarUrl(
+    `${t(UI.calendarTitle)} · ${EVENT.graduateName}`,
+    t(EVENT.venue.name),
+    t(EVENT.venue.address),
+  );
+
+  const onSaveClick = () => {
     playChime();
     setSaved(true);
     window.setTimeout(() => setSaved(false), 2600);
@@ -72,14 +88,16 @@ export default function Dock() {
           </p>
 
           <div className="flex flex-1 items-center gap-2">
-            <button
-              type="button"
-              onClick={save}
+            <a
+              href={calendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onSaveClick}
               className="inline-flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 border-2 border-[#2a2a2a] px-4 text-sm font-medium text-chalk transition-colors duration-200 hover:border-red hover:text-[var(--color-red-text)]"
             >
               {saved ? <CheckIcon className="h-4 w-4" /> : <CalendarIcon className="h-4 w-4" />}
               <span className="truncate">{saved ? t(UI.calendarSaved) : t(UI.addToCalendar)}</span>
-            </button>
+            </a>
 
             <a
               href={mapsUrl}

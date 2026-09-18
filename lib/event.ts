@@ -47,44 +47,18 @@ export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encode
 
 export const mapsEmbedUrl = `https://maps.google.com/maps?q=${EVENT.venue.lat},${EVENT.venue.lng}&z=16&output=embed`;
 
-function toICSStamp(date: Date) {
+function toCalStamp(date: Date) {
   return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
-/** Builds an .ics file and hands it to the browser as a download. */
-export function downloadICS(title: string, location: string) {
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//graduation-invitation//EN",
-    "CALSCALE:GREGORIAN",
-    "BEGIN:VEVENT",
-    `UID:${startDate.getTime()}@graduation-invitation`,
-    `DTSTAMP:${toICSStamp(new Date())}`,
-    `DTSTART:${toICSStamp(startDate)}`,
-    `DTEND:${toICSStamp(endDate)}`,
-    `SUMMARY:${escapeICS(title)}`,
-    `LOCATION:${escapeICS(location)}`,
-    "BEGIN:VALARM",
-    "TRIGGER:-P1D",
-    "ACTION:DISPLAY",
-    `DESCRIPTION:${escapeICS(title)}`,
-    "END:VALARM",
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ];
-
-  const blob = new Blob([lines.join("\r\n")], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "graduation.ics";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function escapeICS(value: string) {
-  return value.replace(/([,;\\])/g, "\\$1").replace(/\n/g, "\\n");
+/** Link that opens Google Calendar with the event pre-filled — one click to save, no backend. */
+export function googleCalendarUrl(title: string, details: string, location: string) {
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${toCalStamp(startDate)}/${toCalStamp(endDate)}`,
+    details,
+    location,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }

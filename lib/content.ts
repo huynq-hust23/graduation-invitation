@@ -72,9 +72,9 @@ export const UI = {
   boarded: { vi: "Đã lên chuyến", en: "Boarded" } as L,
   scrollOn: { vi: "Cuộn để đọc tiếp", en: "Scroll to continue" } as L,
 
-  addToCalendar: { vi: "Lưu vào lịch", en: "Add to calendar" } as L,
+  addToCalendar: { vi: "Lưu vào Google Lịch", en: "Add to Google Calendar" } as L,
   calendarTitle: { vi: "Lễ tốt nghiệp", en: "Graduation ceremony" } as L,
-  calendarSaved: { vi: "Đã tải file lịch", en: "Calendar file downloaded" } as L,
+  calendarSaved: { vi: "Đã mở Google Lịch", en: "Opened Google Calendar" } as L,
   getDirections: { vi: "Chỉ đường", en: "Directions" } as L,
   mapActivate: { vi: "Bấm để dùng bản đồ", en: "Click to use the map" } as L,
 
