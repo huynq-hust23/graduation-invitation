@@ -8,7 +8,7 @@ import TurnstileWidget from "./TurnstileWidget";
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 
 const inputClass =
-  "w-full border border-[#2a2a2a] bg-transparent px-4 py-2.5 text-sm text-chalk placeholder:text-smoke/50 transition-colors focus:border-red focus:outline-none sm:text-base";
+  "w-full border border-[#2a2a2a] bg-transparent px-4 py-2 text-sm text-chalk placeholder:text-smoke/50 transition-colors focus:border-red focus:outline-none sm:text-base";
 
 type Status = "idle" | "sent";
 
@@ -43,9 +43,9 @@ export default function GuestbookForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="grid gap-x-[clamp(1.5rem,4vw,3rem)] gap-y-[clamp(0.6rem,2.6svh,1.5rem)] lg:grid-cols-2"
+      className="grid gap-x-[clamp(1.5rem,4vw,3rem)] gap-y-[clamp(0.4rem,2.6svh,1.5rem)] xl:grid-cols-2"
     >
-      <div className="lg:col-span-2">
+      <div className="xl:col-span-2">
         <Field label={t(GUESTBOOK.fields.name)}>
           <input type="text" name="name" required className={inputClass} />
         </Field>
@@ -56,11 +56,11 @@ export default function GuestbookForm() {
           name="message"
           required
           placeholder={t(GUESTBOOK.fields.messagePlaceholder)}
-          className={`${inputClass} h-14 flex-1 resize-none lg:h-auto`}
+          className={`${inputClass} h-12 flex-1 resize-none xl:h-auto`}
         />
       </Field>
 
-      <div className="flex flex-col gap-[clamp(0.9rem,2.6svh,1.5rem)]">
+      <div className="flex flex-col gap-[clamp(0.6rem,2.6svh,1.5rem)]">
         <Field label={t(GUESTBOOK.fields.photo)}>
           <input
             ref={fileRef}
@@ -82,7 +82,7 @@ export default function GuestbookForm() {
         <TurnstileWidget onVerify={onVerify} />
       </div>
 
-      <div className="lg:col-span-2">
+      <div className="xl:col-span-2">
         <button
           type="submit"
           className="mx-auto flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 bg-red px-6 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[var(--color-red-deep)] sm:w-auto sm:text-base"
@@ -90,7 +90,7 @@ export default function GuestbookForm() {
           {t(GUESTBOOK.submit)}
         </button>
 
-        <p role="status" className="mt-2 min-h-5 text-sm text-[var(--color-red-text)]">
+        <p role="status" className="mt-1.5 min-h-4 text-sm text-[var(--color-red-text)]">
           {status === "sent" ? t(GUESTBOOK.sent) : null}
         </p>
 
@@ -115,7 +115,7 @@ function Field({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="label mb-1.5 block text-smoke">{label}</span>
+      <span className="label mb-1 block text-smoke">{label}</span>
       {children}
       {hint && <span className="mt-1.5 block text-xs text-smoke/70">{hint}</span>}
     </label>
